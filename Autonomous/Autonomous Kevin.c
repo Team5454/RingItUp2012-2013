@@ -1,3 +1,4 @@
+bool isReady = false;
 
 task main()
 {
@@ -38,8 +39,23 @@ task Drive()
 		RightColumn();
 		break;
 	}
+	isReady = true;
 }
 task Arm()
+{
+	WaitForDrive();
+	DropArm(0);
+}
+
+void WaitForDrive()
+{
+	while(isReady == false)
+	{
+		wait10Msec(500);
+	}
+}
+
+void DropArm(int height)
 {
 
 }

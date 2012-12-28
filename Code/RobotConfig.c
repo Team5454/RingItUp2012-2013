@@ -16,34 +16,29 @@
 #pragma config(Servo,  srvo_S1_C3_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_6,    servo6,               tServoNone)
 
-///////////////////////////////////////////////
-/// File Name: Teleop.V4.c
-/// Creator: Chris Beck, Joslyn, Sou
-/// Date of Creation: [12/10/12]
-/// Last Editor: Chris Beck
-///
-/// Changes: Modifications to logic to enable correct functioning of code and corrections of errors.
-///
-/// Description:
-///		The teleoperated main program
-///
-///////////////////////////////////////////////
-#include "JoystickDriver.c"
-#include "TeleOpTasks.c"
-#include "RobotConfig.c"
-
-////////////////////////////////////////////////////////////////////////////////////////
-
-task main()
+void initializeRobot()
 {
-	initializeRobot();
-	waitForStart();
-	while(true) //if this doesn't work, put the statements in each task into while loops
-	{
-		StartTask(Drive);
-		StartTask(Lifter);
-		StartTask(RAM);
-		StartTask(Ramp);
-	}
+	// Place code here to initialize servos to starting positions.
+	// Sensors are automatically configured and setup by ROBOTC. They may need a brief time to stabilize.
+	//the servos are initialzed here so that in the event that a crate is held in autonomous it will not be dropped
+
+	servoTarget[ramp] = 154;
+	servoTarget[bamLeft] = 0;
+	servoTarget[bamRight] = 254;
+	servoChangeRate[ramp] = 5;
+
+	motor[RightMotor] = 0;
+	motor[LeftMotor] = 0;
+
+	nMotorEncoder[lifter] = 0;
+	nMotorEncoder[LeftMotor] = 0;
+	nMotorEncoder[RightMotor] = 0;
+	motor[stopLeft] = 50;
+	motor[stopRight] = 50;
+	wait10Msec(100);
+	motor[stopLeft] = 0;
+	motor[stopRight] = 0;
+	nMotorEncoder[stopLeft] = 0;
+	nMotorEncoder[stopRight] = 0;
+	return;
 }
-//End of File//

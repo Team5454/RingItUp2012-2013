@@ -17,12 +17,12 @@
 #pragma config(Servo,  srvo_S1_C3_6,    servo6,               tServoNone)
 
 ///////////////////////////////////////////////
-/// File Name: Teleop.V4.c
-/// Creator: Chris Beck, Joslyn, Sou
-/// Date of Creation: [12/10/12]
+/// File Name: TeleOp.c
+/// Creator: Chris Beck, Joslyn
 /// Last Editor: Chris Beck
 ///
-/// Changes: Modifications to logic to enable correct functioning of code and corrections of errors.
+/// Changes: Code cut up into header files to simplify it.
+///	Multitasking added.
 ///
 /// Description:
 ///		The teleoperated main program
@@ -38,12 +38,13 @@ task main()
 {
 	initializeRobot();
 	waitForStart();
-	while(true) //if this doesn't work, put the statements in each task into while loops
-	{
-		StartTask(Drive);
-		StartTask(Lifter);
-		StartTask(RAM);
-		StartTask(Ramp);
-	}
+
+	StartTask(Drive);
+	StartTask(Arm);
+	StartTask(RAM);
+	StartTask(Ramp);
 }
+
+
+
 //End of File//

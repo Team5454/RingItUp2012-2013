@@ -71,16 +71,13 @@ gyro_data gyro;        // Gyro data variable
 long stempA;
 long stempB;
 long stempC;
-// int D_I_G_I_T_A_L = -1;
-// int mode2;
-// proto_data proto;
 
 // function with no return value
 //that stops all motors
 void stop_all_motors()
 {
-	motor[RightMotor] = 0;
-	motor[LeftMotor] = 0;
+	motor[mtr_S1_C1_2] = 0;
+	motor[mtr_S1_C1_2] = 0;
 	return;
 }
 
@@ -137,8 +134,8 @@ int compute_click_for_two_wheelturn(float wheel_base_distance, float wheel_diame
 void reset_encoder()
 {
 	// Initialize the motor encoders
-	nMotorEncoder[LeftMotor] = 0;
-	nMotorEncoder[RightMotor] = 0;
+	nMotorEncoder[mtr_S1_C1_2] = 0;
+	nMotorEncoder[mtr_S1_C1_1] = 0;
 	//wait1Msec(500);
 	wait1Msec(1000);
 
@@ -163,9 +160,9 @@ void move_forward(float dist, int tstop, int lspeed, int rspeed)
 	stval = time1[T1];  // get number of msec
 	dtval = 0;          // compute delta time
 
-	motor[LeftMotor] = lspeed;
-	motor[RightMotor] = rspeed;
-	while ((nMotorEncoder[RightMotor] < clicks_to_move) && (dtval < tstop)) {
+	motor[mtr_S1_C1_2] = lspeed;
+	motor[mtr_S1_C1_1] = rspeed;
+	while ((nMotorEncoder[mtr_S1_C1_1] < clicks_to_move) && (dtval < tstop)) {
 		dtval = time1[T1] - stval;
 		wait1Msec(1);
 	}
@@ -187,48 +184,16 @@ void turn_left (float rangle, int tstop, int lspeed, int rspeed)
 	time1[T1] = 0;      // Start the timer at 0 msec
 	stval = time1[T1];  // get number of msec
 	dtval = 0;          // compute delta time
-	motor[LeftMotor] = -lspeed;
-	motor[RightMotor] =  rspeed;
-	while ((nMotorEncoder[RightMotor] > -clicks_to_move) && (dtval < tstop)) {
+	motor[mtr_S1_C1_2] = -lspeed;
+	motor[mtr_S1_C1_1] =  rspeed;
+	while ((nMotorEncoder[mtr_S1_C1_1] > -clicks_to_move) && (dtval < tstop)) {
 		dtval = time1[T1] - stval;
 		wait1Msec(1);
 	}
 	stop_all_motors();
 }
 
-
-
-void turngyro_right(float ang, int spd)
-{
-	gyro.total = 0;
-
-	if ((gyro.total/1000.0) < ang)
-	{
-		motor[LeftMotor] = spd;
-		motor[RightMotor] = -spd;
-		while ((gyro.total/1000.0) > -ang)
-		{
-			nxtDisplayCenteredTextLine(1, "Agyro=%d", gyro.total/1000);
-			wait1Msec(1);
-		}
-		stop_all_motors();
-	}
-	/*
-	if ((gyro.total/1000.0) < -ang)
-	{
-	motor[LeftMotor] = -spd;
-	motor[RightMotor] = spd;
-	while ((gyro.total/1000.0) < -ang)
-	{
-	nxtDisplayCenteredTextLine(1, "Bgyro=%d", gyro.total/1000);
-	wait1Msec(1);
-	}
-	stop_all_motors();
-	}
-	*/
-}
-
-void turngyro_left_oneWheel(float ang, int spd)
+void turngyro_oneWheel(float ang, int spd) //negative = left / positive = right
 {
 	long startangle;
 	long currentangle;
@@ -240,8 +205,8 @@ void turngyro_left_oneWheel(float ang, int spd)
 
 	if (currentangle > endangle)
 	{
-		motor[LeftMotor] = 0;
-		motor[RightMotor] = spd;
+		motor[mtr_S1_C1_2] = 0;
+		motor[mtr_S1_C1_1] = spd;
 
 		while (currentangle > endangle)
 		{
@@ -252,8 +217,8 @@ void turngyro_left_oneWheel(float ang, int spd)
 	}
 	if (currentangle < endangle)
 	{
-		motor[LeftMotor] = 0;
-		motor[RightMotor] = -spd;
+		motor[mtr_S1_C1_2] = 0;
+		motor[mtr_S1_C1_1] = -spd;
 		while (currentangle < endangle)
 		{
 			currentangle = gyro.total / 1000;
@@ -279,9 +244,9 @@ void turn_right (float rangle, int tstop, int lspeed, int rspeed)
 	time1[T1] = 0;      // Start the timer at 0 msec
 	stval = time1[T1];  // get number of msec
 	dtval = 0;          // compute delta time
-	motor[LeftMotor] = lspeed;
-	motor[RightMotor] = -rspeed;
-	while ((nMotorEncoder[LeftMotor] < clicks_to_move) && (dtval < tstop)) {
+	motor[mtr_S1_C1_2] = lspeed;
+	motor[mtr_S1_C1_1] = -rspeed;
+	while ((nMotorEncoder[mtr_S1_C1_2] < clicks_to_move) && (dtval < tstop)) {
 		dtval = time1[T1] - stval;
 		wait1Msec(1);
 	}
@@ -289,17 +254,17 @@ void turn_right (float rangle, int tstop, int lspeed, int rspeed)
 
 }
 
-void turngyro_left(float ang, int spd)
+void turngyro(float ang, int spd)//negative = left / positive = right
 {
 	gyro.total = 0;
 
-	nMotorEncoder[RightMotor] = 0;
-	nMotorEncoder[LeftMotor] = 0;
+	nMotorEncoder[mtr_S1_C1_1] = 0;
+	nMotorEncoder[mtr_S1_C1_2] = 0;
 
 	if ((gyro.total/1000.0) > ang)
 	{
-		motor[LeftMotor] = -spd;
-		motor[RightMotor] = spd;
+		motor[mtr_S1_C1_2] = -spd;
+		motor[mtr_S1_C1_1] = spd;
 		while ((gyro.total/1000.0) > ang)
 		{
 			nxtDisplayCenteredTextLine(3, "A gyro=%d", gyro.total/1000.0);
@@ -309,45 +274,11 @@ void turngyro_left(float ang, int spd)
 	}
 	if ((gyro.total/1000.0) < ang)
 	{
-		motor[LeftMotor] = spd;
-		motor[RightMotor] = -spd;
+		motor[mtr_S1_C1_2] = spd;
+		motor[mtr_S1_C1_1] = -spd;
 		while ((gyro.total/1000.0) < ang)
 		{
 			nxtDisplayCenteredTextLine(3, "B gyro=%d", gyro.total/1000.0);
-			wait1Msec(1);
-		}
-		stop_all_motors();
-	}
-}
-
-void turngyro_right_oneWheel(float ang, int spd)
-{
-	long startangle;
-	long currentangle;
-	long endangle;
-
-	startangle = gyro.total / 1000;
-	currentangle = startangle;
-	endangle = startangle + ang;
-
-	if (currentangle < endangle)
-	{
-		motor[LeftMotor] = spd;
-		motor[RightMotor] = 0;
-		while (currentangle < endangle)
-		{
-			currentangle = gyro.total / 1000;
-			wait1Msec(1);
-		}
-		stop_all_motors();
-	}
-	if ((gyro.total/1000.0) > endangle)
-	{
-		motor[LeftMotor] = -spd;
-		motor[RightMotor] = 0;
-		while (currentangle > endangle)
-		{
-			currentangle = gyro.total / 1000;
 			wait1Msec(1);
 		}
 		stop_all_motors();
@@ -369,9 +300,9 @@ void move_backwards(float dist, int tstop, int lspeed, int rspeed)
 	time1[T1] = 0;      // Start the timer at 0 msec
 	stval = time1[T1];  // get number of msec
 	dtval = 0;          // compute delta time
-	motor[LeftMotor] = -lspeed;
-	motor[RightMotor] = -rspeed;
-	while ((nMotorEncoder[LeftMotor] > clicks_to_move) && (dtval < tstop)) {
+	motor[mtr_S1_C1_2] = -lspeed;
+	motor[mtr_S1_C1_1] = -rspeed;
+	while ((nMotorEncoder[mtr_S1_C1_2] > clicks_to_move) && (dtval < tstop)) {
 		dtval = time1[T1] - stval;
 		wait1Msec(1);
 	}
@@ -394,9 +325,9 @@ void back_turn_left(float rangle, int tstop, int lspeed, int rspeed)
 	dtval = 0;          // compute delta time
 	// again remember depending on which way to want to
 	// turn, enable the correct motor direction
-	motor[RightMotor] = rspeed;
-	motor[LeftMotor] = -lspeed;
-	while ((nMotorEncoder[RightMotor] < clicks_to_move) && (dtval < tstop)) {
+	motor[mtr_S1_C1_1] = rspeed;
+	motor[mtr_S1_C1_2] = -lspeed;
+	while ((nMotorEncoder[mtr_S1_C1_1] < clicks_to_move) && (dtval < tstop)) {
 		dtval = time1[T1] - stval;
 		wait1Msec(1);
 	}
@@ -419,9 +350,9 @@ void back_turn_right (float rangle, int tstop, int lspeed, int rspeed)
 	dtval = 0;          // compute delta time
 	// again remember depending on which way to want to
 	// turn, enable the correct motor direction
-	motor[RightMotor] = -rspeed;
-	motor[LeftMotor] = lspeed;
-	while ((nMotorEncoder[LeftMotor] < clicks_to_move) && (dtval < tstop)) {
+	motor[mtr_S1_C1_1] = -rspeed;
+	motor[mtr_S1_C1_2] = lspeed;
+	while ((nMotorEncoder[mtr_S1_C1_2] < clicks_to_move) && (dtval < tstop)) {
 		dtval = time1[T1] - stval;
 		wait1Msec(1);
 	}
@@ -580,15 +511,15 @@ void move(int direction, float Xvalue, int timeout)
 	//float totalSpeed;
 	bool count = true;
 
-	nMotorEncoder[RightMotor] = 0;
-	nMotorEncoder[LeftMotor] = 0;
+	nMotorEncoder[mtr_S1_C1_1] = 0;
+	nMotorEncoder[mtr_S1_C1_2] = 0;
 
 	wait1Msec(50);
 	ClearTimer(T1);
 
 	while(count && (time1[T1]<timeout))
 	{
-		Xcurrent = abs((nMotorEncoder[RightMotor] + nMotorEncoder[LeftMotor])/2)/**conversionFactor*/;
+		Xcurrent = abs((nMotorEncoder[mtr_S1_C1_1] + nMotorEncoder[mtr_S1_C1_2])/2)/**conversionFactor*/;
 
 		//calculates distance needed to go
 		errorX = Xdesired - Xcurrent;
@@ -603,26 +534,26 @@ void move(int direction, float Xvalue, int timeout)
 			Xspeed = 20 * (direction);
 		//Yspeed = proportionConstant * errorY;
 
-		motor[LeftMotor] = Xspeed;
-		motor[RightMotor] = Xspeed;
+		motor[mtr_S1_C1_2] = Xspeed;
+		motor[mtr_S1_C1_1] = Xspeed;
 
 		if(Xdesired <= Xcurrent)
 		{
 			count = false;
-			motor[LeftMotor] = 0;
-			motor[RightMotor] = 0;
-			nMotorEncoder[RightMotor] = 0;
-			nMotorEncoder[LeftMotor] = 0;
+			motor[mtr_S1_C1_2] = 0;
+			motor[mtr_S1_C1_1] = 0;
+			nMotorEncoder[mtr_S1_C1_1] = 0;
+			nMotorEncoder[mtr_S1_C1_2] = 0;
 
 		}
 		else
 			count = true;
 	}
 	count = false;
-	motor[LeftMotor] = 0;
-	motor[RightMotor] = 0;
-	nMotorEncoder[RightMotor] = 0;
-	nMotorEncoder[LeftMotor] = 0;
+	motor[mtr_S1_C1_2] = 0;
+	motor[mtr_S1_C1_1] = 0;
+	nMotorEncoder[mtr_S1_C1_1] = 0;
+	nMotorEncoder[mtr_S1_C1_2] = 0;
 
 }
 

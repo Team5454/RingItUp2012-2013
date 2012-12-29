@@ -29,8 +29,8 @@
 ///
 ///////////////////////////////////////////////
 #include "JoystickDriver.c"
-#include "TeleOpTasks.c"
-#include "RobotConfig.c"
+#include "../Configuration/TeleOpTasks.c"
+#include "../Configuration/RobotConfig.c"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,9 +42,8 @@ task main()
 	StartTask(Drive);
 	StartTask(Arm);
 	StartTask(RAM);
-	StartTask(Ramp);
+	StartTask(Incline);
 }
-
 
 
 //End of File//

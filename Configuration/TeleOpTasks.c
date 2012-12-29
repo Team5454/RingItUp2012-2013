@@ -120,8 +120,11 @@ task RAM()
 			motor[stopRight] = 0;
 		}
 	}
+}
 
-	task Ramp()
+task Incline()
+{
+	while(true)
 	{
 		if(joy2Btn(10))
 		{

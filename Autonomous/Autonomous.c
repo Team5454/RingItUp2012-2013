@@ -15,3 +15,22 @@
 #pragma config(Servo,  srvo_S1_C3_4,    bamRight,             tServoStandard)
 #pragma config(Servo,  srvo_S1_C3_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_6,    servo6,               tServoNone)
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool isReady = false;
+
+#include "../Configuration/AutoTasks.c"
+#include "../Utilities/RobotMoveUtilities.c"
+#include "../Configuration/RobotConfig.c"
+
+task main()
+{
+	//Initialize Tasks
+	initializeRobot();
+	initialize_gyro();
+	waitForStart();
+
+	StartTask(process_gyro);
+	StartTask(Drivetrain);
+	StartTask(Arm);
+}

@@ -21,7 +21,7 @@
 #include "../Configuration/RobotConfig.c"
 
 const tMUXSensor Color = msensor_S2_1;
-const tMUXSensor Touch = msensor_S2_2;
+const tMUXSensor TouchSensor = msensor_S2_2;
 
 task main()
 {
@@ -29,6 +29,18 @@ task main()
   initializeRobot();
   initialize_gyro();
   selectProgram();
+  switch(
+  {
+  case 0:
+    break;
+  case 1:
+    selectRow();
+    break;
+  case 2:
+    selectRow();
+    selectSecondRow();
+    break;
+  }
   waitForStart();
 
   StartTask(process_gyro);

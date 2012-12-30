@@ -73,17 +73,6 @@ task Arm()
 		}
 
 
-		//OVERRIDE
-		//down
-		if(joy2Btn(4))
-		{
-			motor[lifter] = 50;
-		}
-		/*
-		float encoderVal;
-		nMotorEncoder[lifter] = encoderVal;
-		nxtDisplayBigTextLine(2, "encoder val: %lf", encoderVal);
-		*/
 	}
 }
 

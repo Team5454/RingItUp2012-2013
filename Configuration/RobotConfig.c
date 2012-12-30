@@ -40,5 +40,6 @@ void initializeRobot()
 	motor[stopRight] = 0;
 	nMotorEncoder[stopLeft] = 0;
 	nMotorEncoder[stopRight] = 0;
+
 	return;
 }

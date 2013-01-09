@@ -96,9 +96,9 @@ void selectRow()
     }
     //---------------------------------------------------------------
     if(nNxtButtonPressed == 3)
-    {
-      eraseDisplay();
-      break;
+    {																																				////////////////	You  need to return a variable
+      eraseDisplay();																												////////////////	that selects the auto program
+      break;																																////////////////	for later. 			-Jos :)
     }
     //---------------------------------------------------------------
   }
@@ -228,7 +228,7 @@ void Color_FollowLine()
       }
       //------------------------------------------
       if(SensorValue[msensor_S2_1] >= 15)
-      {
+      {																																	///////////////	This is repeated from above. -Jos
         motor[mtr_S1_C1_2] = 30;
         motor[mtr_S1_C1_1]= 30;
       }

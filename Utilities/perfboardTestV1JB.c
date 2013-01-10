@@ -21,6 +21,7 @@ task main()
 	//StartTask(process_gyro);
 	ubyte byteInput;
 	int intInput;
+	int switchNumber = 5;
 
 	/*
 	typedef struct
@@ -42,32 +43,43 @@ task main()
 		// Fetch the state of the digital IO pins.  When not explicitly
 		// configured as input or output, they will default to input.
 		byteInput = HTPBreadIO(HTPB, 0x3f);
-		intInput = ((int)byteInput);
+		intInput = ((int)byteInput-32);
 		nxtDisplayTextLine(0, "%d", intInput);
 		nxtDisplayTextLine(1, "------------------");
 
-		/*
-		proto.B0 = (int)(input & 00010000) >> ;
-		proto.B1 = (int)(input & 00100000) >> ;
-		proto.B2 = (int)(input & 00100000) >> ;
-		proto.B3 = (int)(input & 00100000) >> ;
-		proto.B4 = (int)(input & 00100000) >> ;
-		*/
-
 		byteInput = (ubyte)intInput;
 
-		B0 = (byteInput);
-		B1 = (byteInput << 5) >> 6;
+		B0 = (byteInput) ;
+		B1 = (byteInput) >> 1;
 		B2 = (byteInput) >> 2;
 		B3 = (byteInput) >> 3;
 		B4 = (byteInput) >> 4;
 
+		if (B0 == 1)
+			nxtDisplayTextLine(2, "button 1 pressed");
+		else
+			nxtDisplayTextLine(2, "%d", (int)(B0));
 
-		nxtDisplayTextLine(2, "%d", (int)(B0));
-		nxtDisplayTextLine(3, "%d", (int)(B1));
-		nxtDisplayTextLine(4, "%d", (int)(B2));
-		nxtDisplayTextLine(5, "%d", (int)(B3));
-		nxtDisplayTextLine(6, "%d", (int)(B4));
+		if (B1 == 1)
+			nxtDisplayTextLine(3, "button 2 pressed");
+		else
+			nxtDisplayTextLine(3, "%d", (int)(B1));
+
+		if (B2 == 1)
+			nxtDisplayTextLine(4, "button 3 pressed");
+		else
+			nxtDisplayTextLine(4, "%d", (int)(B2));
+
+		if (B3 == 1)
+			nxtDisplayTextLine(5, "button 4 pressed");
+
+		else
+			nxtDisplayTextLine(5, "%d", (int)(B3));
+
+		if (B4 == 1)
+			nxtDisplayTextLine(6, "button 5 pressed");
+		else
+			nxtDisplayTextLine(6, "%d", (int)(B0));
 
 		wait10Msec(10);
 	}

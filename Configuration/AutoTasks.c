@@ -8,6 +8,9 @@
 #include "../Utilities/Robotc Includes/hitechnic-sensormux.h"
 
 //Variables/////////////////////////////////////////////////////////////////////
+const tMUXSensor Color = msensor_S3_1;
+const tMUXSensor TouchSensor = msensor_S3_2;
+const tMUXSensor IR = msensor_S3_3;
 int TouchVal = SensorValue[msensor_S2_2];
 bool isReady = false;
 bool TouchOn = false;
@@ -20,7 +23,7 @@ int Program = 0;
 ////////////////////////////////////////////////////////////////////////////////
 //Select Program--------------------------------------------------------------//
 ////////////////////////////////////////////////////////////////////////////////
-void selectRow()
+void selectProgram()
 {
   eraseDisplay();
   // Enable Top Line NXT Display (Bluetooth, NXT Name & Battery Status)
@@ -155,12 +158,12 @@ void Color_FollowLine()
   switch(irSensorVal)
   {
 //Case 1///////////////////////////////////////////////////
-    case 1;
+    case 1:
     while(ColorOn == true && TouchVal == 0)
     {
       while(ColorOn == true && TouchVal == 0)
       {
-        if(sensorValue[msensor_S2_1] < 15)
+        if(SensorValue[msensor_S2_1] < 15)
         {
           motor[mtr_S1_C1_2] = 50;
           motor[mtr_S1_C1_1] = 50;
@@ -203,7 +206,7 @@ void Color_FollowLine()
   case 2:
     while(ColorOn == true && TouchVal == 0)
     {
-      if(sensorValue[msensor_S2_1] < 15)
+      if(SensorValue[msensor_S2_1] < 15)
       {
         motor[mtr_S1_C1_2] = 50;
         motor[mtr_S1_C1_1] = 50;
@@ -245,7 +248,7 @@ void Color_FollowLine()
   case 3:
     while(ColorOn == true && TouchVal == 0)
     {
-      if(sensorValue[msensor_S2_1] < 15)
+      if(SensorValue[msensor_S2_1] < 15)
       {
         motor[mtr_S1_C1_2] = 50;
         motor[mtr_S1_C1_1] = 50;
@@ -469,18 +472,18 @@ void Return_CenterColumn()
 ////////////////////////////////////////////////////////////////////////////////
 void GoToRing()
 {
-  turngyro(90, 30, 1500);
-  wait10Msec();
+  turngyro(90, 30);
+  wait10Msec(100);
   move(1, 12, 1500);
-  wait10Msec();
+  wait10Msec(100);
 }
 //-----------------------
 void ReturnToStart()
 {
   move(-1, 12, 1500);
-  wait10Msec();
-  turngyro(-90, 30, 1500);
-  wait10Msec();
+  wait10Msec(100);
+  turngyro(-90, 30);
+  wait10Msec(100);
 }
 //-----------------------
 void GrabRing()
@@ -492,7 +495,7 @@ void GrabRing()
 ////////////////////////////////////////////////////////////////////////////////
 task GrabAutoRing()
 {
-  goToRing();
+  GoToRing();
   ReturnToStart();
   GrabRing();
   switch(irSensorVal)

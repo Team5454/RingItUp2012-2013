@@ -1,3 +1,10 @@
+#include "../Utilities/RobotMoveUtilities.c"
+#include "../Utilities/Robotc Includes/hitechnic-sensormux.h"
+
+//Variables/////////////////////////////////////////////////////////////////////
+const tMUXSensor Color = msensor_S3_1;
+const tMUXSensor TouchSensor = msensor_S3_2;
+const tMUXSensor IR = msensor_S3_3;
 bool speed = true;
 
 task Drive()

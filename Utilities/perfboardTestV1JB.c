@@ -14,6 +14,8 @@
 //		be a valid data type in robotc...										//
 //																				-Joslyn					//
 //																												//
+//    Hi Joslyn                                           //
+//                                        -Chris          //
 ////////////////////////////////////////////////////////////
 
 task main()
@@ -22,6 +24,7 @@ task main()
 	ubyte byteInput;
 	int intInput;
 	int switchNumber = 5;
+	int buttonVal = 0;
 
 	/*
 	typedef struct
@@ -56,30 +59,29 @@ task main()
 		B4 = (byteInput) >> 4;
 
 		if (B0 == 1)
-			nxtDisplayTextLine(2, "button 1 pressed");
+			buttonVal = 1;
 		else
-			nxtDisplayTextLine(2, "%d", (int)(B0));
+			buttonVal = 0;
 
 		if (B1 == 1)
-			nxtDisplayTextLine(3, "button 2 pressed");
+			buttonVal = 2;
 		else
-			nxtDisplayTextLine(3, "%d", (int)(B1));
+			buttonVal = 0;
 
 		if (B2 == 1)
-			nxtDisplayTextLine(4, "button 3 pressed");
+			buttonVal = 3;
 		else
-			nxtDisplayTextLine(4, "%d", (int)(B2));
+			buttonVal = 0;
 
 		if (B3 == 1)
-			nxtDisplayTextLine(5, "button 4 pressed");
-
+			buttonVal = 4;
 		else
-			nxtDisplayTextLine(5, "%d", (int)(B3));
+			buttonVal = 0;
 
 		if (B4 == 1)
-			nxtDisplayTextLine(6, "button 5 pressed");
+			buttonVal = 5;
 		else
-			nxtDisplayTextLine(6, "%d", (int)(B0));
+			buttonVal = 0;
 
 		wait10Msec(10);
 	}

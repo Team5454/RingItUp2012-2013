@@ -25,20 +25,9 @@ task main()
 	int intInput;
 	int switchNumber = 5;
 	int buttonVal = 0;
-
-	/*
-	typedef struct
-	{
-		int B0;
-		int B1;
-		int B2;
-		int B3;
-		int B4;
-	} proto_input;
-	*/
-
 	int B0, B1, B2, B3, B4;
   HTPBsetupIO(HTPB, 0x0);
+
 	while(true)
 	{
 		//nxtDisplayTextLine(3, "Switch Pressed");
@@ -52,16 +41,17 @@ task main()
 
 		byteInput = (ubyte)intInput;
 
-		B0 = (byteInput) ;
+		B0 = ((byteInput)<< 11) >>11;
 		B1 = (byteInput) >> 1;
 		B2 = (byteInput) >> 2;
 		B3 = (byteInput) >> 3;
 		B4 = (byteInput) >> 4;
 
-		if (B0 == 1)
-			buttonVal = 1;
+		nxtDisplayTextLine(1, "%d", (int) (B0));
+		if (B0 % 2 == 1 || B0 == 1)
+			nxtDisplayTextLine(3, "1");
 		else
-			buttonVal = 0;
+			nxtDisplayTextLine(3, "0");
 
 		if (B1 == 1)
 			buttonVal = 2;

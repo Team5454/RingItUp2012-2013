@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-///Program Name: MoveCommands_Protoboard
+///Program Name: RobotMoveUtilities
 ///Date of Creation: The beginning of time
-///Creator: God/CB
+///Creator: God(CB)
 ///Version#: 1
 ///
-///Editor of Previous Version: CB
-///Editor of Current Version : CB
+///Editor of Previous Version: God
+///Editor of Current Version : God
 ///
 ///Issues:
 ///-None
@@ -26,12 +26,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //use this include statement if you are using the regular programming laptop
 //use this include statement if you are using the Coleman laptop
-//#include "C:\Users\FTC\Dropbox\Programming\Sample Code\drivers\HTPB-driver.h"
-//#include "Drivers/HTSMUX-driver.h"
-//#include "Drivers/HTMAG-driver.h"
-//#include "Drivers/HTIRS2-driver.h"
-//#include "HTEOPD-driver.h"
-//#include "Drivers/common.h"
+#include "../Utilities/Robotc Includes/hitechnic-protoboard.h"
+#include "JoystickDriver.c"
 
 #define OUR_CPR 1440 // 2880
 #define Wheel_Base 17.0
@@ -40,9 +36,17 @@
 #define CIRCUMFERENCE_3 9.42477  // 2 * PI * 3 in
 #define CIRCUMFERENCE_4 12.5664  // 2 * PI * 4 in
 
-// Sensor Multiplexor
-//const tMUXSensor HTMAG = msensor_S3_1;
-// int MagnetCal;
+typedef struct
+{
+  int rightSwitch;
+  int leftSwitch;
+  int team;
+  int mode;
+} proto_data;
+
+int D_I_G_I_T_A_L = -1;
+int mode2;
+proto_data proto;
 
 typedef struct
 {
@@ -56,14 +60,6 @@ typedef struct
 	long dzmax;
 } gyro_data;
 
-typedef struct
-{
-	int rightSwitch;
-	int leftSwitch;
-	int team;
-	int mode;
-} proto_data;
-
 #define GyroSensor S4  // Gyro Sensor Port
 #define GyroTimer T4   // Timer used by Gyro processing
 
@@ -76,9 +72,6 @@ long stempC;
 //that stops all motors
 void stop_all_motors()
 {
-	motor[RightMotor] = 0;
-	motor[LeftMotor] = 0;
-	return;
 }
 
 // function to compute the number of clicks based on the
@@ -554,7 +547,30 @@ void move(int direction, float Xvalue, int timeout)
 	motor[RightMotor] = 0;
 	nMotorEncoder[RightMotor] = 0;
 	nMotorEncoder[LeftMotor] = 0;
-
 }
+
+void initialize_proto()
+{
+	// The data to be written: 0x3F = 111111 binary,
+	// makes all digital ports outputs.
+	HTPBsetupIO(HTPB, 0x0);
+}
+
+task process_proto
+{
+	while (true)
+	{
+		int data = (int) HTPBreadIO  (HTPB, 0xff);
+		D_I_G_I_T_A_L = data;
+		mode2 = (int)(data & 0b00000111);
+		proto.leftSwitch = (int)(data & 0b00010000) >> 4;
+		proto.rightSwitch = (int)((data<<2)>>7);
+		proto.team = (int)((data<<4)>>7) & 1;
+		proto.mode = (int)(data & 0b00000111);
+		wait1Msec(100);
+
+	}
+}
+
 
 //End of File//

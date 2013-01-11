@@ -1,7 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
-#pragma config(Sensor, S2,     Protoboard,     sensorI2CCustom)
-#pragma config(Sensor, S3,     SMUX,           sensorI2CCustom9V)
-#pragma config(Sensor, S4,     Gyro,           sensorI2CHiTechnicGyro)
+#pragma config(Sensor, S2,     Gyro,           sensorI2CCustom9V)
+#pragma config(Sensor, S3,     light,          sensorLightActive)
+#pragma config(Sensor, S4,     HTPB,           sensorI2CHiTechnicGyro)
 #pragma config(Motor,  motorA,          RamRight,      tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,          RamLeft,       tmotorNXT, openLoop)
 #pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop)
@@ -9,8 +9,8 @@
 #pragma config(Motor,  mtr_S1_C1_2,     RightMotor,    tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C2_1,     LeftMotor,     tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_2,     LeftMotor,     tmotorTetrix, openLoop, reversed, encoder)
-#pragma config(Motor,  mtr_S1_C3_1,     lifter,        tmotorTetrix, openLoop, encoder)
-#pragma config(Motor,  mtr_S1_C3_2,     lifter,        tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C3_1,     elevatorA,     tmotorTetrix, openLoop, encoder)
+#pragma config(Motor,  mtr_S1_C3_2,     elevatorB,     tmotorTetrix, openLoop, reversed)
 #pragma config(Servo,  srvo_S1_C4_1,    BamContR,             tServoContinuousRotation)
 #pragma config(Servo,  srvo_S1_C4_2,    BamContL,             tServoContinuousRotation)
 #pragma config(Servo,  srvo_S1_C4_3,    servo3,               tServoNone)
@@ -21,8 +21,8 @@
 
 ///////////////////////////////////////////////
 /// File Name: TeleOp.c
-/// Creator: Chris Beck, Joslyn
-/// Last Editor: Chris Beck
+/// Creator: Chris Beck, Joslyn Beckert
+/// Last Editor: Joslyn
 ///
 /// Changes: Code cut up into header files to simplify it.
 ///	Multitasking added.
@@ -43,9 +43,10 @@ task main()
 	waitForStart();
 
 	StartTask(Drive);
-	StartTask(Arm);
+	StartTask(lifter);
 	StartTask(RAM);
-	StartTask(Incline);
+	StartTask(BAM);
+	//StartTask(Incline);
 }
 
 

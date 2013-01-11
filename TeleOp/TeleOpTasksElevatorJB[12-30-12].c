@@ -4,6 +4,9 @@
 bool resetEncodersAtBeginning(bool resetEncoders)
 {
 	//resets encoders at the beginning
+
+
+
 	if(resetEncoders)
 	{
 		motor[lifter] = -10;

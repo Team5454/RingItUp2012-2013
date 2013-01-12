@@ -1,6 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 #include "../Utilities/RobotMoveUtilities.c"
 #include "../Utilities/Robotc Includes/hitechnic-sensormux.h"
 #include "JoystickDriver.c"
@@ -11,71 +8,23 @@ int limit = 0;
 const tMUXSensor Color = msensor_S3_1;
 const tMUXSensor TouchSensor = msensor_S3_2;
 const tMUXSensor IR = msensor_S3_3;
-bool speed = true;
 
-void ProcessProto()
-{
-	ubyte byteInput;
-	int intInput;
-	//int proto.buttonVal = 0;
-	int B0, B1, B2, B3, B4, ring = 0;
-	HTPBsetupIO(HTPB, 0x0);
-
-	//while(true)
-	//{
-	//nxtDisplayTextLine(3, "Switch Pressed");
-
-	// Fetch the state of the digital IO pins.  When not explicitly
-	// configured as input or output, they will default to input.
-	byteInput = HTPBreadIO (HTPB, 0x3f);
-	intInput = ((int)byteInput-32);
-	//nxtDisplayTextLine(1, "%d", intInput);
-	//nxtDisplayTextLine(0, "------------------");
-
-	byteInput = (ubyte)intInput;
-
-	B0 = ((byteInput)<< 11) >>11;
-	B1 = (byteInput) >> 1;
-	B2 = (byteInput) >> 2;
-	B3 = (byteInput) >> 3;
-	B4 = (byteInput) >> 4;
-
-	if (B0 % 2 == 1 || B0 == 1)
-		limit = 1;
-	else
-		limit = 0;
-
-	if (B1 != 0)
-		ring = 1;
-	else
-		ring = 0;
-
-	nxtDisplayTextLine(0, "%d", limit);
-	/*
-	if (B2 == 1)
-	buttonVal = 3;
-	else
-	buttonVal = 0;
-
-	if (B3 == 1)
-	buttonVal = 4;
-	else
-	buttonVal = 0;
-
-	if (B4 == 1)
-	buttonVal = 5;
-	else
-	buttonVal = 0;
-	*/
-	wait10Msec(10);
-
-
-	//}
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 ///////////////////// NEEDS TO BE WRITTEN BEFORE TOURNAMENT /////////////////////
 /////////////////////////////////////////////////////////////////////////////////
+
+//values are wrong
+/*int readJoystick(int value)
+{
+if (joy2Btn()) // 1 height
+value = (int)1440*18/(2*PI);
+else if (joy2Btn()) // 2 height
+value = (int)1440*32/(2*PI);
+else if (joy2Btn()) // 3 height
+value = (int)1440*46/(2*PI);
+return value;
+}*/
 
 task BAM()
 {
@@ -83,15 +32,36 @@ task BAM()
 	int value = 130;
 	if(6)
 	{
+
+		//Move BAM apart
 		while(nMotorEncoder[BAM] < 130)
 		{
-			servo[BAM] =
+			servo[BamContL] = 40;
+			servo[BamContR] = 40;
 		}
 	}
+
+	bool BamTogether;
+	//Move BAM together
 	if(8)
 	{
-		//move them apart
+		BamTogether = true;
+		while(BamTogether)
+		{
+			servo[BamContL] = -40;
+			servo[BamContR] = -40;
+		}
+
+		servo[BamContL] = 40;
+		servo[BamContR] = 40;
+		wait10Msec(500);
 	}
+
+	BamTogether = false;
+
+	servo[BamContL] = 0;
+	servo[BamContR] = 0;
+
 	servoTarget[BAM] = value;
 	return;
 }
@@ -100,61 +70,61 @@ task BAM()
 /////////////////////////// PRESETS ///////////////////////////
 ///////////////////////////////////////////////////////////////
 
-int elevatorGoToHeight(int Xdesired)
+/*int elevatorGoToHeight(int Xdesired)
 {
-	int Xcurrent;
-	int errorX;
-	int Xspeed;
-	//int lifterEncoderVal;
-	int touchValTop = 0;
-	int touchValBottom = 0;
-	bool automode;
-	int elevatorDirection = 1;
-	int proportionConstant = 1; // figure this out!!!!
-	automode = true;
-	Xcurrent = nMotorEncoder[lifter];
+int Xcurrent;
+int errorX;
+int Xspeed;
+//int lifterEncoderVal;
+int touchValTop = 0;
+int touchValBottom = 0;
+bool automode;
+int elevatorDirection = 1;
+int proportionConstant = 1; // figure this out!!!!
+automode = true;
+Xcurrent = nMotorEncoder[motorA];
 
-	while(((Xcurrent > Xdesired -40) || (Xcurrent < Xdesired +40)) && touchValBottom == 0)
-	{
-		Xdesired = readJoystick(Xdesired);  //reads controller to see if fickle user wants to go somewhere else instead
+while(((Xcurrent > Xdesired -40) || (Xcurrent < Xdesired +40)) && touchValBottom == 0)
+{
+Xdesired = readJoystick(Xdesired);  //reads controller to see if fickle user wants to go somewhere else instead
 
-		//reads limit switches
-		ProcessProto();
+//reads limit switches
+ProcessProto();
 
-		//reads xcurrent
-		Xcurrent = nMotorEncoder[lifter];
+//reads xcurrent
+Xcurrent = nMotorEncoder[lifter];
 
-		//calculates what the distance you still need to go and determines the adjusted speed
-		errorX = Xdesired - Xcurrent;
+//calculates what the distance you still need to go and determines the adjusted speed
+errorX = Xdesired - Xcurrent;
 
-		//back up if overshoot
-		if (Xcurrent > Xdesired)
-			elevatorDirection = elevatorDirection * -1;
+//back up if overshoot
+if (Xcurrent > Xdesired)
+elevatorDirection = elevatorDirection * -1;
 
-		//////////////////////////////////////////////////////////
-		//////////           SETS THE SPEED             //////////
-		//////////////////////////////////////////////////////////
-		Xspeed = proportionConstant * errorX * elevatorDirection;
-		//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+//////////           SETS THE SPEED             //////////
+//////////////////////////////////////////////////////////
+Xspeed = proportionConstant * errorX * elevatorDirection;
+//////////////////////////////////////////////////////////
 
-		//corrects speed for distances over 100
-		if(abs(Xspeed) > 75)
-			Xspeed = 100*elevatorDirection;
+//corrects speed for distances over 100
+if(abs(Xspeed) > 75)
+Xspeed = 100*elevatorDirection;
 
-		//sets the speed of the motors
-		motor[lifter] = Xspeed;
+//sets the speed of the motors
+motor[lifter] = Xspeed;
 
-		//stop button
-		if(joy2Btn() == 1)
-		{
-			motor[lifter] = 0;
-			break;
-		}
-	}
-	motor[lifter] = 0;
-	return 0;
+//stop button
+if(joy2Btn() == 1)
+{
+motor[lifter] = 0;
+break;
 }
-
+}
+motor[lifter] = 0;
+return 0;
+}
+*/
 
 //////////////////////////////////////////////////////////////////////////////
 ////////////////////////// DRIVE TRAIN CODE IS DONE //////////////////////////
@@ -162,51 +132,37 @@ int elevatorGoToHeight(int Xdesired)
 
 task Drive()
 {
+	bool speed = true;
+
 	while(true)
 	{
-		getJoystickSettings(joystick);
-		int jLeft = -(int)joystick.joy1_y1;
-		int jRight = (int)joystick.joy1_y2;
+		while(true)
+		{
+			int jLeft = -(int)joystick.joy1_y1;
+			int jRight = (int)joystick.joy1_y2;
 
-		if(joy1Btn(5))
-		{
-			speed = true;
-		}
-		//------------------------------
-		if(joy1Btn(7))
-		{
-			speed = false;
-		}
-		//-------------------------------
-		if (speed)
-		{
-			if (abs(jLeft) < 10)            ///< core out the noise for near zero settings
-				motor[LeftMotor] = 0;         ///< sets the left motor to 0% power
+			if (abs(jLeft) < 10)
+			{///< core out the noise for near zero settings
+				motor[LeftMotor] = 0;
+			}
 			else
-				motor[LeftMotor] = jLeft;     ///< set motors to joystick settings
-			if (abs(jRight) < 10)           ///< core out the noise for near zero settings
+			{
+				motor[LeftMotor] = (jLeft/126)*100;     ///< set motors to joystick settings
+			}
+			if (abs(jRight) < 10)  {         ///< core out the noise for near zero settings
 				motor[RightMotor] = 0;        ///< sets the right motor to 0% power
+			}
 			else
-				motor[RightMotor] = jRight;   ///< sets motors to joystick settings
+			{
+				motor[RightMotor] = (jRight/126)*100;   ///< sets motors to joystick settings
+			}
 		}
-		//--------------------------------
-		else
-		{
-			if (abs(jLeft) < 10)            ///< core out the noise for near zero settings
-				motor[LeftMotor] = 0;         ///< sets the left motor to 0% power
-			else
-				motor[LeftMotor] = (jLeft/3); ///< set motors to joystick settings
-			if (abs(jRight) < 10)           ///< core out the noise for near zero settings
-				motor[RightMotor] = 0;        ///< sets the right motor to 0% power
-			else
-				motor[RightMotor] = (jRight/3); ///< sets motors to joystick settings
-		}
+
 	}
-}
 
-task Lifter()
-{
 	/*
+	task Lifter()
+	{
 
 	////////////////////////////// RANDOM JUNK //////////////////////////////
 
@@ -281,84 +237,147 @@ task Lifter()
 	break;
 	}
 
+
+	}
 	*/
-}
+
 }
 
+task Lifter()
+{
 
-task Arm()
-{
-while(true)
-{
-	HTPBsetupIO(HTPB, 0x0);
-	nMotorEncoder[elevatorA] = 0;
 	int encoder;
-	int desiredHeight = 20; //desired height to go to in inches
-	int scaledDesiredHeight = (int)(desiredHeight - 2.7282)/.0043; //converts inches to encoder counts for test rig
-	//StartTask(ProcessProto);
 
-	while(true)
+	getJoystickSettings(joystick);
+	bDisplayDiagnostics = false;
+	bNxtLCDStatusDisplay = false;
+	ProcessProto();
+
+	//nxtDisplayCenteredTextLine(2, "Desired = %d", scaledDesiredHeight);
+	nxtDisplayCenteredTextLine(4, "Limit = %d", limit);
+
+	if(limit == 1)
 	{
-		getJoystickSettings(joystick);
-		bDisplayDiagnostics = false;
-		bNxtLCDStatusDisplay = false;
-		ProcessProto();
-
-		nxtDisplayCenteredTextLine(2, "Desired = %d", scaledDesiredHeight);
-		nxtDisplayCenteredTextLine(4, "Limit = %d", limit);
-
-		if(limit == 1)
+		if(joy1Btn(5))
 		{
-			if(joy1Btn(5))
-			{
-				motor[elevatorA] = 75;
-				motor[elevatorB] = 75;
-			}
-			else
-			{
-				motor[elevatorA] = 0;
-				motor[elevatorB] = 0;
-			}
+			motor[elevatorA] = 85;
+			motor[elevatorB] = 85;
 		}
 		else
 		{
-			if(joy1Btn(5))
-			{
-				motor[elevatorA] = 75;
-				motor[elevatorB] = 75;
-			}
-			else if(joy1Btn(7))
-			{
-				motor[elevatorA] = -55;
-				motor[elevatorB] = -55;
-			}
-			else if(joy1Btn(1))
-				nMotorEncoder[elevatorA] = 0;
-			else
-			{
-				motor[elevatorA] = 0;
-				motor[elevatorB] = 0;
-			}
-		}
-
-		encoder = nMotorEncoder[elevatorA]*-1;
-
-		if(joy1Btn(2))
-		{
-			while(encoder <= scaledDesiredHeight)
-			{
-				encoder = nMotorEncoder[elevatorA]*-1;
-				motor[elevatorA] = 50;
-				motor[elevatorB] = 50;
-			}
 			motor[elevatorA] = 0;
 			motor[elevatorB] = 0;
 		}
-
-		nxtDisplayCenteredTextLine(3, "Encoder = %d", encoder);
-
 	}
+	else
+	{
+		if(joy1Btn(5))
+		{
+			motor[elevatorA] = 85;
+			motor[elevatorB] = 85;
+		}
+		else if(joy1Btn(7))
+		{
+			motor[elevatorA] = -55;
+			motor[elevatorB] = -55;
+		}
+		else if(joy1Btn(1))
+			nMotorEncoder[elevatorA] = 0;
+		else
+		{
+			motor[elevatorA] = 0;
+			motor[elevatorB] = 0;
+		}
+	}
+
+	encoder = nMotorEncoder[elevatorA]*-1;
+
+	/*if(joy1Btn(2))
+	{
+	while(encoder <= scaledDesiredHeight)
+	{
+	encoder = nMotorEncoder[elevatorA]*-1;
+	motor[elevatorA] = 50;
+	motor[elevatorB] = 50;
+	}
+	motor[elevatorA] = 0;
+	motor[elevatorB] = 0;
+	}*/
+
+	nxtDisplayCenteredTextLine(3, "Encoder = %d", encoder);
+
+
+	//while(true)
+	//{
+	//	HTPBsetupIO(HTPB, 0x0);
+	//	nMotorEncoder[elevatorA] = 0;
+	//	int encoder;
+	//	int desiredHeight = 20; //desired height to go to in inches
+	//	int scaledDesiredHeight = (int)(desiredHeight - 2.7282)/.0043; //converts inches to encoder counts for test rig
+	//	//StartTask(ProcessProto);
+
+	//	while(true)
+	//	{
+	//		getJoystickSettings(joystick);
+	//		bDisplayDiagnostics = false;
+	//		bNxtLCDStatusDisplay = false;
+	//		ProcessProto();
+
+	//		nxtDisplayCenteredTextLine(2, "Desired = %d", scaledDesiredHeight);
+	//		nxtDisplayCenteredTextLine(4, "Limit = %d", limit);
+
+	//		if(limit == 1)
+	//		{
+	//			if(joy1Btn(5))
+	//			{
+	//				motor[elevatorA] = 75;
+	//				motor[elevatorB] = 75;
+	//			}
+	//			else
+	//			{
+	//				motor[elevatorA] = 0;
+	//				motor[elevatorB] = 0;
+	//			}
+	//		}
+	//		else
+	//		{
+	//			if(joy1Btn(5))
+	//			{
+	//				motor[elevatorA] = 75;
+	//				motor[elevatorB] = 75;
+	//			}
+	//			else if(joy1Btn(7))
+	//			{
+	//				motor[elevatorA] = -55;
+	//				motor[elevatorB] = -55;
+	//			}
+	//			else if(joy1Btn(1))
+	//				nMotorEncoder[elevatorA] = 0;
+	//			else
+	//			{
+	//				motor[elevatorA] = 0;
+	//				motor[elevatorB] = 0;
+	//			}
+	//		}
+
+	//		encoder = nMotorEncoder[elevatorA]*-1;
+
+	//		if(joy1Btn(2))
+	//		{
+	//			while(encoder <= scaledDesiredHeight)
+	//			{
+	//				encoder = nMotorEncoder[elevatorA]*-1;
+	//				motor[elevatorA] = 50;
+	//				motor[elevatorB] = 50;
+	//			}
+	//			motor[elevatorA] = 0;
+	//			motor[elevatorB] = 0;
+	//		}
+
+	//		nxtDisplayCenteredTextLine(3, "Encoder = %d", encoder);
+
 }
+
 
 /*
 ////////////////
@@ -389,51 +408,49 @@ motor[lifter] = 0;
 */
 
 
-}
-}
 
 task RAM()
 {
-while(true)
-{
-//////Mechanical Stop/////////////////////////////////////////////////////////////////////////
-//Down////
-if(joy2Btn(2))
-{
-	nMotorEncoderTarget[stopLeft] = 90;
-	nMotorEncoderTarget[stopRight] = 90;
-	ClearTimer(T1);
-	while ((nMotorEncoder[stopLeft] < 90) && (time1[T1] < 500))
+	while(true)
 	{
-		motor[stopLeft] = -30;
-		motor[stopRight] = -30;
+		//////Mechanical Stop/////////////////////////////////////////////////////////////////////////
+		//Down////
+		if(joy2Btn(2))
+		{
+			nMotorEncoderTarget[RamLeft] = 90;
+			nMotorEncoderTarget[RamRight] = 90;
+			ClearTimer(T1);
+			while ((nMotorEncoder[RamLeft] < 90) && (time1[T1] < 500))
+			{
+				motor[RamLeft] = -30;
+				motor[RamRight] = -30;
+			}
+		}
+
+		//Up////
+		if(joy2Btn(4))
+		{
+			nMotorEncoderTarget[RamLeft] = 0;
+			nMotorEncoderTarget[RamRight] = 0;
+			ClearTimer(T1);
+			while ((nMotorEncoder[RamLeft] > 0) && (time1[T1] < 500))
+			{
+				motor[RamLeft] = 30;
+				motor[RamRight] = 30;
+			}
+			motor[RamLeft] = 0;
+			motor[RamRight] = 0;
+		}
 	}
 }
 
-//Up////
-if(joy2Btn(4))
+task DeployRamp()
 {
-	nMotorEncoderTarget[stopLeft] = 0;
-	nMotorEncoderTarget[stopRight] = 0;
-	ClearTimer(T1);
-	while ((nMotorEncoder[stopLeft] > 0) && (time1[T1] < 500))
+	while(true)
 	{
-		motor[stopLeft] = 30;
-		motor[stopRight] = 30;
+		if(joy2Btn(10))
+		{
+			servoTarget[ramp] = 1;
+		}
 	}
-	motor[stopLeft] = 0;
-	motor[stopRight] = 0;
-}
-}
-}
-
-task Incline()
-{
-while(true)
-{
-if(joy2Btn(10))
-{
-	servoTarget[ramp] = 1;
-}
-}
 }

@@ -1,4 +1,5 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     Gyro,           sensorI2CCustom9V)
 #pragma config(Sensor, S3,     light,          sensorLightActive)
 #pragma config(Sensor, S4,     HTPB,           sensorI2CHiTechnicGyro)
@@ -13,7 +14,7 @@
 #pragma config(Motor,  mtr_S1_C3_2,     elevatorB,     tmotorTetrix, openLoop, reversed)
 #pragma config(Servo,  srvo_S1_C4_1,    BamContR,             tServoContinuousRotation)
 #pragma config(Servo,  srvo_S1_C4_2,    BamContL,             tServoContinuousRotation)
-#pragma config(Servo,  srvo_S1_C4_3,    servo3,               tServoNone)
+#pragma config(Servo,  srvo_S1_C4_3,    ramp,                 tServoStandard)
 #pragma config(Servo,  srvo_S1_C4_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_6,    servo6,               tServoNone)
@@ -43,10 +44,10 @@ task main()
 	waitForStart();
 
 	StartTask(Drive);
-	StartTask(lifter);
+	StartTask(Lifter);
 	StartTask(RAM);
 	StartTask(BAM);
-	//StartTask(Incline);
+	StartTask(DeployRamp);
 }
 
 

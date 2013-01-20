@@ -1,8 +1,5 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     Gyro,           sensorI2CCustom9V)
-#pragma config(Sensor, S3,     light,          sensorLightActive)
-#pragma config(Sensor, S4,     HTPB,           sensorI2CHiTechnicGyro)
+#pragma config(Sensor, S4,     HTPB,           sensorI2CCustom9V)
 #pragma config(Motor,  motorA,          RamRight,      tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,          RamLeft,       tmotorNXT, openLoop)
 #pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop)
@@ -35,6 +32,9 @@
 #include "JoystickDriver.c"
 #include "../Configuration/TeleOpTasks.c"
 #include "../Configuration/RobotConfig.c"
+//#include "../Utilities/RobotMoveUtilities.c"
+#include "../Utilities/Robotc Includes/hitechnic-sensormux.h"
+#include "../Utilities/Robotc Includes/hitechnic-protoboard.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,6 +48,12 @@ task main()
 	StartTask(RAM);
 	StartTask(BAM);
 	StartTask(DeployRamp);
+
+	while(true)
+	{
+		getJoystickSettings(joystick);
+		nxtDisplayCenteredTextLine(1, "Happily Running :)");
+}
 }
 
 

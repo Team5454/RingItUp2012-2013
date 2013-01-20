@@ -1,14 +1,71 @@
-#include "../Utilities/RobotMoveUtilities.c"
-#include "../Utilities/Robotc Includes/hitechnic-sensormux.h"
-#include "JoystickDriver.c"
-#include "../Utilities/Robotc Includes/hitechnic-protoboard.h"
+#include "C:\Users\ditu\Documents\GitHub\RingItUp2012-2013\Utilities\Robotc Includes\hitechnic-protoboard.h"
 int limit = 0;
 
-//Variables/////////////////////////////////////////////////////////////////////
-const tMUXSensor Color = msensor_S3_1;
-const tMUXSensor TouchSensor = msensor_S3_2;
-const tMUXSensor IR = msensor_S3_3;
+void ProcessProto()
+{
+	ubyte byteInput;
+	int intInput;
+	//int proto.buttonVal = 0;
+	int B0, B1, B2, B3, B4, ring = 0;
+	HTPBsetupIO(HTPB, 0x0);
 
+	//while(true)
+	//{
+		//nxtDisplayTextLine(3, "Switch Pressed");
+
+		// Fetch the state of the digital IO pins.  When not explicitly
+		// configured as input or output, they will default to input.
+		byteInput = HTPBreadIO (HTPB, 0x3f);
+		intInput = ((int)byteInput-32);
+		//nxtDisplayTextLine(1, "%d", intInput);
+		//nxtDisplayTextLine(0, "------------------");
+
+		byteInput = (ubyte)intInput;
+
+		B0 = ((byteInput)<< 11) >>11;
+		B1 = (byteInput) >> 1;
+		B2 = (byteInput) >> 2;
+		B3 = (byteInput) >> 3;
+		B4 = (byteInput) >> 4;
+
+		if (B0 % 2 == 1 || B0 == 1)
+			limit = 1;
+		else
+			limit = 0;
+
+		if (B1 != 0)
+			ring = 1;
+		else
+			ring = 0;
+
+		nxtDisplayTextLine(0, "%d", limit);
+/*
+		if (B2 == 1)
+			buttonVal = 3;
+		else
+			buttonVal = 0;
+
+		if (B3 == 1)
+			buttonVal = 4;
+		else
+			buttonVal = 0;
+
+		if (B4 == 1)
+			buttonVal = 5;
+		else
+			buttonVal = 0;
+	*/
+		wait10Msec(10);
+
+
+	//}
+}
+
+
+//Variables/////////////////////////////////////////////////////////////////////
+//const tMUXSensor Color = msensor_S3_1;
+//const tMUXSensor TouchSensor = msensor_S3_2;
+//const tMUXSensor IR = msensor_S3_3;
 
 /////////////////////////////////////////////////////////////////////////////////
 ///////////////////// NEEDS TO BE WRITTEN BEFORE TOURNAMENT /////////////////////
@@ -28,41 +85,29 @@ return value;
 
 task BAM()
 {
-	// not sure how to dispense rings yet
-	int value = 130;
-	if(6)
+	if(joy1Btn(6))
 	{
-
-		//Move BAM apart
-		while(nMotorEncoder[BAM] < 130)
-		{
-			servo[BamContL] = 40;
-			servo[BamContR] = 40;
-		}
+		//Move Right BAM apart
+		servo[BamContR] = 30;
+	}
+	if(joy1Btn(8))
+	{
+		//Move Right BAM together
+		servo[BamContR] = -30;
 	}
 
-	bool BamTogether;
-	//Move BAM together
-	if(8)
+	if(joy1Btn(5))
 	{
-		BamTogether = true;
-		while(BamTogether)
-		{
-			servo[BamContL] = -40;
-			servo[BamContR] = -40;
-		}
-
-		servo[BamContL] = 40;
-		servo[BamContR] = 40;
-		wait10Msec(500);
+		//Move Left BAM apart
+		servo[BamContL] = 30;
 	}
 
-	BamTogether = false;
+	if(joy1Btn(7))
+	{
+		//Move Left BAM together
+		servo[BamContL] = -30;
+	}
 
-	servo[BamContL] = 0;
-	servo[BamContR] = 0;
-
-	servoTarget[BAM] = value;
 	return;
 }
 
@@ -258,7 +303,7 @@ task Lifter()
 
 	if(limit == 1)
 	{
-		if(joy1Btn(5))
+		if(joy2Btn(5))
 		{
 			motor[elevatorA] = 85;
 			motor[elevatorB] = 85;
@@ -271,17 +316,17 @@ task Lifter()
 	}
 	else
 	{
-		if(joy1Btn(5))
+		if(joy2Btn(5))
 		{
 			motor[elevatorA] = 85;
 			motor[elevatorB] = 85;
 		}
-		else if(joy1Btn(7))
+		else if(joy2Btn(7))
 		{
 			motor[elevatorA] = -55;
 			motor[elevatorB] = -55;
 		}
-		else if(joy1Btn(1))
+		else if(joy2Btn(1))
 			nMotorEncoder[elevatorA] = 0;
 		else
 		{
@@ -450,7 +495,11 @@ task DeployRamp()
 	{
 		if(joy2Btn(10))
 		{
-			servoTarget[ramp] = 1;
+			servo[ramp] = -100;
+		}
+		if(joy2Btn(9))
+		{
+			servo[ramp] = 100;
 		}
 	}
 }

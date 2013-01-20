@@ -321,6 +321,7 @@ task main()
     }
 
     /////////////////////////////////////////   RAM   /////////////////////////////////////////
+    //RAM Down
     if(joy1Btn(2))
     {
       nMotorEncoderTarget[RAMright] = 90;
@@ -335,6 +336,7 @@ task main()
       motor[RAMleft] = 0;
     }
 
+    //RAM Up
     if(joy1Btn(4))
     {
       nMotorEncoderTarget[RAMright] = 0;
@@ -369,6 +371,18 @@ task main()
       servoTarget[WAMLeftServo] = 127;
 
     /////////////////////////////////////////   RAMP   /////////////////////////////////////////
+    //servo open to release the ramp
+    if(joy1Btn(10))
+    {
+      servo[RampServo] = 1;
+    }
+    //servo close if needed to wiggle the string off
+    if(joy1Btn(9))
+    {
+      servo[RampServo] = 254;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
     // Place code to auto score a ring here
 

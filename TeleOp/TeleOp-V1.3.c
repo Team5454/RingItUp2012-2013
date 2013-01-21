@@ -352,23 +352,23 @@ task main()
     }
 
     /////////////////////////////////////////   WAM   /////////////////////////////////////////
-    //WAM right up
-    if(joy1Btn(8))
-      servo[WAMRightServo] = 125;
-    //WAM right down
-    else if(joy1Btn(6))
-      servo[WAMRightServo] = 129;
-    else
-      servo[WAMRightServo] = 127;
+    //if(joy1Btn(8))
+    //  servoTarget[WAMRightServo] = 107;
+    ////WAM right down
+    //else if(joy1Btn(6))
+    //  servoTarget[WAMRightServo] = 147;
+    //else
+    //  servoTarget[WAMRightServo] = 127;
 
-    //WAM left up
-    if(joy1Btn(5))
-      servoTarget[WAMLeftServo] = 125;
-    //WAM left down
-    else if(joy1Btn(7))
-      servoTarget[WAMLeftServo] = 129;
-    else
-      servoTarget[WAMLeftServo] = 127;
+
+    ////WAM left up
+    //if(joy1Btn(5))
+    //  servoTarget[WAMLeftServo] = 107;
+    ////WAM left down
+    //else if(joy1Btn(7))
+    //  servoTarget[WAMLeftServo] = 147;
+    //else
+    //  servoTarget[WAMLeftServo] = 127;
 
     /////////////////////////////////////////   RAMP   /////////////////////////////////////////
     //servo open to release the ramp

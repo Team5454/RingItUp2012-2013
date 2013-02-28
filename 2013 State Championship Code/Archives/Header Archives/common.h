@@ -66,7 +66,7 @@
 
 /*!< define this as 0 to remove the check  */
 #ifndef __COMMON_H_SENSOR_CHECK__
-#define __COMMON_H_SENSOR_CHECK__ 0  // was 1
+#define __COMMON_H_SENSOR_CHECK__ 1
 #else
 #warn "sensor checking disabled, I hope you know what you are doing!"
 #endif
